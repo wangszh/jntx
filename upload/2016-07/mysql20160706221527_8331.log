@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《SELECT count(1) FROM jntxfb_budgetyearview WHERE 1=1  and budgetid=3dealstatus>1》----------原因：Unknown column '3dealstatus' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.1875371950206315&_dc=1467814526726

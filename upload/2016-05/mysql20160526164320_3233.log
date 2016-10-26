@@ -1,0 +1,2 @@
+budget/addbudget/export,[错误SQL]：《select `name` from `jntxfb_dept` where `iszw`=0 and not exists (select `id` from `jntxfb__dept` where `iszw`=0 and a.id=`pid`) order by `pid`,`sort`》----------原因：Table 'jntxfboa.jntxfb__dept' doesn't exist
+URL：a=export&m=addbudget&d=budget&ajaxbool=true&rnd=0.20116007682103465&opennew=true

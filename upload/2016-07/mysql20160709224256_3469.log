@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《select * from jntxfb_budget_bydeptview where 1=1      order by num    limit 0,20》----------原因：Unknown column 'num' in 'order clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.6716703319922888&_dc=1468075374380

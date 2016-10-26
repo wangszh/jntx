@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《select * from jntxfb_budgetmonthview where 1=1    and budgetid=undefined and deptid=undefined and subjectid=undefined   order by monnum    limit 0,20》----------原因：Unknown column 'undefined' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.7246893257703163&_dc=1467697156056

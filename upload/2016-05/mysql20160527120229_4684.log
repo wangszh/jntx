@@ -1,0 +1,2 @@
+budget/subject/publictreestore,[错误SQL]：《SELECT id,num,name,pid,sort,optdt,headman,headid,companyid,iszw FROM jntxfb_subject WHERE `pid`='0'  order by `num`》----------原因：Unknown column 'sort' in 'field list'
+URL：a=publictreestore&m=subject&d=budget&order=num&expandall=true&ajaxbool=true&rnd=0.6828272084502729&_dc=1464321748448

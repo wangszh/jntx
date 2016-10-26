@@ -1,0 +1,51 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>万年历</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="format-detection" content="email=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+<link rel="stylesheet" href="../public/css/webimcss.css" />
+<script type="text/javascript" src="../public/js/jquery.js"></script>
+<script type="text/javascript" src="../public/js/js.js"></script>
+<script type="text/javascript" src="../public/mode/calendar/jquery-rocklunar.js"></script>
+<script type="text/javascript" src="../public/mode/calendar/jquery-rockcalendar.js"></script>
+<script>
+function initbody(){
+	var objy = $('#veiw').rockcalendar({
+		height:winHb()-40,
+		changemonth:function(y, m){
+			$('#nowmonth').html(''+y+'年'+xy10(m)+'月');
+		},
+		align:'center',
+		valign:'center'
+	});
+	$('#nowmonth').click(function(){
+		objy.nowmonth();
+	});
+	$('#btn1').click(function(){
+		objy.fanmonth(-1);
+	});
+	$('#btn2').click(function(){
+		objy.fanmonth(1);
+	});
+}
+</script>
+</head>
+<body>
+<div>
+<table width="100%">
+<tr>
+	<td height="40" align="left">&nbsp;<a id="btn1" class="webbtn">&lt;上月</a></td>
+	<td id="nowmonth" align="center"></td>
+	<td align="right"><a id="btn2" class="webbtn">下月&gt;</a>&nbsp;</td>
+</tr>
+</table>
+</div>
+<div id="veiw"></div>
+</body>
+</html>

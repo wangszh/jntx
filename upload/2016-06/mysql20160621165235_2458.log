@@ -1,0 +1,2 @@
+budget/subject/loadsubject,[错误SQL]：《select `id`,`name`,`num` from `jntxfb_subject` where `pid`=0 order by `sort`》----------原因：Unknown column 'sort' in 'order clause'
+URL：a=loadsubject&m=subject&d=budget&ajaxbool=true&rnd=0.8786773552002125&aid=1&changetype=changesubject

@@ -1,0 +1,2 @@
+budget/addbudget/import,[错误SQL]：《SELECT max(`sort`) FROM jntxfb_budgetyear WHERE `id`>0》----------原因：Unknown column 'sort' in 'field list'
+URL：a=import&m=addbudget&d=budget&ajaxbool=true&rnd=0.3750547940029656&yid=3

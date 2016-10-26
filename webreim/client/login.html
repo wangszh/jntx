@@ -1,0 +1,156 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>REIM登录</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="format-detection" content="email=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+<link rel="stylesheet" href="public/css/webimcss.css" />
+<link rel="shortcut icon" id="icon_show" href="favicon.ico" />
+<script type="text/javascript" src="public/js/jquery.1.9.1.min.js"></script>
+<script type="text/javascript" src="public/js/js.js"></script>
+<script type="text/javascript" src="public/js/base64-min.js"></script>
+<script type="text/javascript" src="public/js/nwjs.js"></script>
+<script type="text/javascript" src="public/websql/websql.js"></script>
+<script type="text/javascript" src="public/js/reimdb.js"></script>
+<script>
+var temp_token='';
+function initbody(){
+	nwjs.init();
+	js.splittime=0;
+	var us=js.request('adminuser',js.getoption('adminuser')),murl=js.request('murl');
+	temp_token=js.request('token');
+	if(murl){
+		murl=jm.base64decode(murl);
+		js.setoption('apiurl', murl);
+		apiurl=murl;
+	}
+	var opas = jm.base64decode(js.getoption('adminpass'));
+	get('adminpass').value=opas;
+	var aid = js.getoption('adminid');
+	$('#adminuser').val(us);
+	var face = js.getoption('adminface');
+	if(face)get('myface').src=face;
+	var adoid=js.getoption('autologin');
+	if(adoid=='1')get('checkautologin').checked=true;
+	nwjs.createtray('REIM即时通', 0);
+	if(temp_token.length>=8){
+		loginsubmit(0);
+	}else{
+		if(adoid=='1'&&opas!='')loginsubmit(1);
+	}
+	reimdb.init();
+	reimdb.initcreate();
+}
+function bodyunload(){
+	nwjs.removetray();
+	js.ajaxss('reimweb','loginexit');
+}
+function changeauto(o){
+	var oi = '0';
+	if(o.checked)oi='1';
+	js.setoption('autologin', oi);
+}
+function loginsubmit(lx){
+	if(js.ajaxbool)return false;
+	var user = get('adminuser').value;
+	var pass = get('adminpass').value;
+	if(lx==1)temp_token='';
+	js.setmsg('');
+	if(user==''){
+		js.msg('msg','用户名不能为空');
+		return false;
+	}
+	if(pass==''&&temp_token==''){
+		js.msg('msg','密码不能为空');
+		return false;
+	}
+	var o = get('btn0');
+	o.value='登录中...';
+	o.disabled=true;
+	js.setoption('adminpass', jm.base64encode(pass));
+	js.ajaxss('login','checklogin', function(da){
+		o.value='登录成功';
+		loginsuccess(da);
+	},{user:jm.base64encode(user),pass:jm.base64encode(pass),token:temp_token},'none', function(str){
+		o.value='登录';
+		o.disabled=false;
+	});
+	return false;	
+}
+function loginsuccess(a){
+	js.setoption('adminid',a.uid);
+	js.setoption('appapikey',a.apikey);
+	js.setoption('adminname',a.name);
+	js.setoption('adminuser',a.user);
+	js.setoption('adminface',a.face);
+	js.setoption('admintoken',a.token);
+	js.setoption('splittime',a.splittime);
+	if(nwjsgui){
+		var x = screen.width - window.screenX- $(window).width()-30;
+		window.moveBy(x,0);
+	}
+	js.location('index.html?aid='+a.uid+'&token='+a.token+'');
+}
+function loginset(){
+	js.tanbody('closea','设置',200,150,{
+		html:'<div style="padding:10px"><div>您OA网址</div><div><input id="apiurlstr" class="inputs" value="'+apiurl+'" style="width:100%"></div></div>',btn:[{
+			text:'确定'
+		}]
+	});
+	$('#closea_btn0').click(function(){
+		var url=get('apiurlstr').value;
+		if(url){
+			if(url.substr(url.length-1,1)!='/')url=url+'/';
+		}
+		get('apiurlstr').value=url;
+		js.setoption('apiurl', url);
+		if(url)apiurl=url;
+		js.msg('success','设置成功');
+		js.tanclose('closea');
+	});	
+}
+</script>
+<style>
+.faceicons{height:100px;width:100px;overflow:hidden;border:1px #cccccc solid; background-color:white;border-radius:60px;}
+.foot{color:#aaaaaa;width:100%;width:100%;left:0px;bottom:10px;position:fixed;text-align:center;font-size:10px;padding:0px 5px}
+.input{width:100%;height:36px}
+</style>
+</head>
+<body style="overflow:hidden;" scroll="no">
+
+<div>
+
+	<div>
+		<div style="padding:15px 0px 15px 0px;font-size:18px"></div>
+		<div align="center"><div onclick="location.reload()" class="faceicons"><img id="myface" src="images/logo.png" height="100" width="100"></div></div>
+		<div class="blank30"></div>
+		<div style="padding:0px 20px">
+			<input type="text" class="input"   onKeyUp="if(event.keyCode==13)get('adminpass').focus()" value="" id="adminuser" placeholder="请输入用户名">
+		</div>
+		<div class="blank20"></div>
+		<div style="padding:0px 20px">
+			<input class="input" onKeyUp="if(event.keyCode==13)loginsubmit(1)" id="adminpass" type="password" placeholder="请输入密码">
+		</div>
+		<div class="blank10"></div>
+		<div style="padding:0px 20px">
+			<label><input onclick="changeauto(this)" id="checkautologin" type="checkbox">下次自动登录</label>
+		</div>
+		<div class="blank20"></div>
+		
+		<div style="padding:0px 20px">
+			<input style="width:100%;padding:10px" type="button" id="btn0" onClick="loginsubmit(1)" class="webbtn" name="button" value="登录">
+		</div>
+		<div class="blank20"></div>
+		<div align="center" style="color:#888888;font-size:12px">没有帐号?请联系管理员 &nbsp;<a onclick="return loginset()" href="javascript:">[设置]</a> </div>
+	</div>
+</div>
+<div class="foot" style="display:">&copy;2016 RockOA开发团队 by www.rockoa.com</div>
+
+
+</body>
+</html>

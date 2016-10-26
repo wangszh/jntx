@@ -1,0 +1,15 @@
+<?php
+/**
+	*****************************************************************
+	* 联系QQ：290802026/1073744729									*
+	* QQ  群：429403774，提供技术交流等								*
+	* 版  本：V2.2+													*
+	* 开发者：RockOA研发中心/雨中磐石工作室							*
+	* 邮  箱：admin@rockoa.com										*
+	* 网  址：http://www.rockoa.com/								*
+	* 说  明: 核心代码/或者在线安装代码								*
+	* 备  注: 未经允许不得商业出售，代码欢迎参考纠正				*
+	* 修改时: 2016-05-09 20:15:46									*	
+	*****************************************************************
+*/
+ class reimwebClassAction extends appapiAction{private $myrs = array();public function loadinitAjax(){m('login')->uplastdt();$dbs = m('reim');$arr = array();$arr['uarr'] = $dbs->getuser('', $this->adminid);$arr['wdarr'] = $this->getwdarr();$arr['history'] = $dbs->gethistory();$arr['garr'] = $this->getmygroup();$arr['agent'] = $dbs->getagent($this->adminid);$arr['darr'] = m('dept')->getdept(0, 'user');$this->myrs= $dbs->myrs;$gczta = m('reims')->getreims();$this->myrs['fromrecid'] = $gczta['recid'];$this->myrs['fromwshost'] = $gczta['wsurl'];$this->myrs['reimtitle'] = $gczta['title'];$arr['myrs'] = $this->myrs;$this->showreturn($arr);}public function loginexitAjax(){m('login')->exitlogin('reim');$this->showreturn('');}public function loaddeptAjax(){$arr['darr'] = m('dept')->getdept(0, 'user');$this->showreturn($arr);}public function getwdarr(){$rows = m('reim')->getwdarr($this->adminid);return $rows;}public function getmygroup(){$facarr = array('images/im/groups_blue.png','images/im/taolun_blue.png','images/im/shezhi_blue.png');$rows = m('reim')->getgroup($this->adminid, $facarr);return $rows;}public function dingshiupAjax(){m('login')->uplastdt('reim');$arr['wdarr'] = $this->getwdarr();$this->showreturn($arr);}public function createlunAjax(){$val= $this->getvals('val');$aid= $this->adminid;$now = $this->rock->now;$this->db->record('[Q]im_group', array('type'=> 1,'name'=> $val,'createid'=> $aid,'createname'=> $this->adminname,'createdt'=> $now));$gid= $this->db->insert_id();m('im_groupuser')->insert(array('gid' => $gid,'uid' => $aid,'adddt' => $now));$this->showreturn('success');}public function loadgroupAjax(){$arr['wdarr'] = $this->getwdarr();$arr['garr'] = $this->getmygroup();$this->showreturn($arr);}public function yaoqinguidAjax(){$gid= (int)$this->get('gid');$val= $this->get('val');$ars= explode(',', $val);$ids = '';$msg = '';$db = m('im_groupuser');foreach($ars as $uid){if($db->rows("gid='$gid' and `uid`='$uid'")==0){$ids .= ','.$uid.'';$db->insert("gid='$gid',`uid`='$uid',`adddt`='$this->now'");}}if($ids!='')$ids = substr($ids,1);if($msg==''){$msg='success'.$ids.'';}$this->showreturn($msg);}public function exitgroupAjax(){$aid= $this->adminid;$gid= (int)$this->get('gid');m('im_groupuser')->delete("`gid`='$gid' and `uid`='$aid'");m('im_messzt')->delete("`gid`='$gid' and `uid`='$aid'");$this->showreturn('success');}public function remhistoryAjax(){$type= $this->get('type');$mid= $this->get('mid');$dbs = m('im_history');$where  = "`type`='$type' and `mid`='$mid' and `uid`='$this->adminid'";$to = $dbs->rows($where);if($to==0){$dbs->insert(array('type' => $type,'mid' => $mid,'uid' => $this->adminid,'optdt' => $this->now,));}$this->showreturn('');}}

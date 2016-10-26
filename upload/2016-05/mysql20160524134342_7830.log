@@ -1,0 +1,2 @@
+system/extent/savebudget,[错误SQL]：《insert into `jntxfb_budgetyear` (`budgetid`,`deptid`,`subjectid`,`yearvalue`) '3','4','1','1'》----------原因：You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3','4','1','1'' at line 1
+URL：a=savebudget&m=extent&d=system&ajaxbool=true&rnd=0.8270097926212828

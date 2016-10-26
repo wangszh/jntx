@@ -1,0 +1,2 @@
+system/extent/makemonthbudget,[错误SQL]：《select `a.budgetid`,`a.id`,`a.deptid`,`a.subjectid`,`b.id`,`FORMAT(a.yearvalue/12,2)` from `jntxfb_budgetmonnum b`,`jntxfb_budgetyear a` where `a.budgetid`=3》----------原因：Table 'jntxfboa.jntxfb_budgetmonnum b' doesn't exist
+URL：a=makemonthbudget&m=extent&d=system&ajaxbool=true&rnd=0.2832178837062891

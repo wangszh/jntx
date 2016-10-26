@@ -1,0 +1,4 @@
+::每一天间隔5分钟从08:00 开始运行 到19:00
+schtasks /create /sc DAILY /mo 1 /du "11:00" /ri 5 /sd "2016/04/01" /st "08:00:00"  /tn "RockOAMinute" /tr F:\IIS\a.bat
+::每天每15分钟运行一次
+schtasks /create /sc DAILY /mo 1 /du "24:00" /ri 15 /sd "2016/04/01" /st "00:00:05"  /tn "RockOABase" /tr F:\IIS\a.bat

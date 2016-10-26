@@ -1,0 +1,23 @@
+﻿{
+	"main": "login.html",
+	"name": "REIM即时通",
+	"description": "REIM即时通信，来自www.rockoa.com的聊天工具。",
+	"version": "1.1",
+	"window": {
+		"title": "REIM登录",
+		"icon": "images/logo.png",
+		"toolbar": false,
+		"frame": true,
+		"width": 260,
+		"height": 500,
+		"position": "center",
+		"min_width": 260,
+		"min_height": 500,
+		"show_in_taskbar":false,
+		"kiosk":false
+	},
+	"webkit": {
+		"plugin": true,
+		"page-cache":false
+	}
+}

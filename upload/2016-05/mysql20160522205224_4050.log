@@ -1,0 +1,2 @@
+/index/publicsave,[错误SQL]：《insert into `jntxfb_budget` set `name`='2016然后年度',`ndyear`='0',`iscurent`='是',`optdt`='2016-05-22 20:52:23',`type`='0',`mid`='0'》----------原因：Unknown column 'iscurent' in 'field list'
+URL：a=publicsave&m=index&d=&ajaxbool=true&rnd=0.35918139972620045

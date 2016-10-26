@@ -1,0 +1,2 @@
+budget/execution/deptfx,[错误SQL]：《SELECT deptid,dname,yearvalue,dealvalue,round((dealvalue/monthvalue`,2) AS bili FROM jntxfb_budget_bydeptview WHERE budgetid>0 and budgetid=3》----------原因：You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`,2) AS bili FROM jntxfb_budget_bydeptview WHERE budgetid>0 and budgetid=3' at line 1
+URL：a=deptfx&m=execution&d=budget&ajaxbool=true&rnd=0.8446548109073361

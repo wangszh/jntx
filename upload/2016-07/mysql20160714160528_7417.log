@@ -1,0 +1,2 @@
+budget/execution/deptfx,[错误SQL]：《SELECT deptid,dname,yearvalue,dealvalue FROM jntxfb_admin WHERE budgetid>0 and budgetid=3》----------原因：Unknown column 'dname' in 'field list'
+URL：a=deptfx&m=execution&d=budget&ajaxbool=true&rnd=0.6703266115801262

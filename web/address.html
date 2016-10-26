@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>通讯录</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="yes">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/js.js"></script>
+		<script type="text/javascript" src="js/base64-min.js"></script>
+		<script type="text/javascript" src="js/jsmenu.js"></script>
+		<script>
+			function initbody() {
+				if (!initlogin()) return;
+				jssdkwixin();
+				if (HOST.indexOf('gzwmgds.cn') > 0) {
+					$('#group_div').remove();
+					$('#groupadd_div').remove();
+				}
+				var s = js.getoption('systemuser');
+				if (s != '') {
+					getlistla(s);
+				} else {
+					loaddata();
+				}
+				if (isweixin) $('body').append('<div class="mmenu" onclick="showlistmenu()"><img src="image/liebiao.png"></div>');
+			}
+
+			function getlistla(s, kes) {
+				mainobj.html('');
+				var a = s.split(','),
+					d, d1;
+				for (var i = 0; i < a.length; i++) {
+					d = a[i].split('|');
+					d1 = {
+						id: d[0],
+						name: d[1],
+						ranking: d[2],
+						deptname: d[3],
+						deptid: d[4],
+						face: d[5]
+					};
+					if (kes) {
+						if (d1.name.indexOf(kes) > -1 || d1.deptname.indexOf(kes) > -1 || d1.ranking.indexOf(kes) > -1) insertlist(d1);
+					} else {
+						insertlist(d1);
+					}
+				}
+			}
+
+			function loaddata() {
+				var url = js.apiurl('getuser', 'user');
+				js.ajax(url, function(s) {
+					js.setoption('systemuser', s);
+					getlistla(s);
+				});
+			}
+
+			function insertlist(a) {
+				var face, s;
+				face = a.face;
+				if (isempt(face) || face == 'null') {
+					face = 'image/noface.jpg';
+				} else {
+					face = '' + apiurl + '' + face + '';
+				}
+				s = '<div onclick="_addtabsl(' + a.id + ',\'' + a.name + '\')" class="index_list">';
+				s += '	<table width="100%">';
+				s += '		<tr>';
+				s += '			<td width="60" align="center">';
+				s += '				<div ><img height="40" width="40" src="' + face + '"></div>';
+				s += '			</td>';
+				s += '			<td><div class="index_title">' + a.name + '</div><div class="index_titles">' + a.deptname + '(' + a.ranking + ')</div></td>';
+				s += '			<td width="30" align="center"><img width="18" height="18" src="image/rightla.png"></td>';
+				s += '		</tr>';
+				s += '	</table>';
+				s += '</div>';
+				mainobj.append(s);
+			}
+
+			function _addtabsl(ids, name) {
+				var url = 'userinfor.html?uid=' + ids + '&name=' + jm.encrypt(name) + '';
+				if (ids == adminid) url = 'geren.html';
+				js.location(url);
+			}
+
+			function searchcard() {
+				var key = get('keysou').value;
+				getlistla(js.getoption('systemuser'), key);
+			}
+
+			function showlistmenu() {
+				$.rockmenu({
+					data: [{
+						text: '重新加载数据',
+						num: '1'
+					}, {
+						text: '刷新页面',
+						num: '2'
+					}],
+					click: function(d) {
+						if (d.num == '1') loaddata();
+						if (d.num == '2') location.reload();
+					}
+				}).show();
+			}
+
+			function opentabssss(num) {
+				js.location('' + num + '.html');
+			}
+		</script>
+	</head>
+
+	<body class="body">
+
+		<div style="display: block;" id="topheader">
+			<div class="rockheader">
+				<div class="headmor">
+					<div class="topbtn" onclick="js.gotoback()"><img src="image/back.png"></div>
+				</div>
+				<div class="headmor htitle" onclick="location.reload();" id="main_title" align="center">通讯录</div>
+				<div class="headmor" align="right">
+					<div id="list_reorder" onclick="showlistmenu()" class="topbtn"><img src="image/liebiao.png"></div>
+				</div>
+			</div>
+			<div class="blank50"></div>
+		</div>
+
+		<div style="padding:10px; background:white;border-bottom:1px #eeeeee solid">
+			<div style="width:100%" class="input-group">
+				<input class="form-control" onkeyup="if(event.keyCode==13)searchcard()" placeholder="姓名/部门/职位" id="keysou">
+				<span class="input-group-btn">
+			<button onclick="searchcard()" class="btn btn-default" type="button">搜索</button>
+			</span>
+			</div>
+		</div>
+
+		<div onclick="opentabssss('dept')" class="index_list">
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td align="center" width="60">
+							<div class="index_icons4" style="background:#dcb51a">
+								<div><img src="image/zuzhi_b.png"></div>
+							</div>
+						</td>
+						<td>
+							<div class="index_title">组织结构</div>
+						</td>
+						<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div onclick="opentabssss('reim_grouplist')" id="group_div" class="index_list">
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td align="center" width="60">
+							<div class="index_icons4" style="background:#6ac7c8">
+								<div><img src="image/groups.png"></div>
+							</div>
+						</td>
+						<td>
+							<div class="index_title">群/讨论组</div>
+						</td>
+						<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="index_list" id="groupadd_div">
+			<table width="100%">
+				<tbody>
+					<tr>
+						<td align="center" width="60">
+							<div class="index_icons4" style="background:#2399DD">
+								<div><img src="image/plus_w.png"></div>
+							</div>
+						</td>
+						<td>
+							<div class="index_title">创建讨论组＋</div>
+						</td>
+						<td align="center" width="30"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="wutitle">联系人</div>
+
+		<div id="maindiv">
+			<div onclick="_addtabsl(1,'管理员')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/1440578146698_4091.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">管理员</div>
+								<div class="index_titles">开发部(OA项目经理)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(11,'啊端')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">啊端</div>
+								<div class="index_titles">研发部门(董事长)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(2,'RockOA客服')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/24_1510166137.png" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">RockOA客服</div>
+								<div class="index_titles">开发部(客服)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(7,'磐石')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">磐石</div>
+								<div class="index_titles">管理部(董事长)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(4,'大乔')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">大乔</div>
+								<div class="index_titles">行政人事(行政主管)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(3,'貂蝉')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/02_2246506417_crop8455.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">貂蝉</div>
+								<div class="index_titles">行政人事(人事经理)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(5,'小乔')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/30_1448539797_crop9267.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">小乔</div>
+								<div class="index_titles">行政人事(行政前台)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(8,'张飞')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">张飞</div>
+								<div class="index_titles">开发部(程序员)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(9,'赵子龙')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">赵子龙</div>
+								<div class="index_titles">财务部(财务经理)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div onclick="_addtabsl(10,'吕布')" class="index_list">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td align="center" width="60">
+								<div><img src="image/noface.jpg" height="40" width="40"></div>
+							</td>
+							<td>
+								<div class="index_title">吕布</div>
+								<div class="index_titles">财务部(出纳)</div>
+							</td>
+							<td align="center" width="30"><img src="image/rightla.png" height="18" width="18"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</body>
+
+</html>

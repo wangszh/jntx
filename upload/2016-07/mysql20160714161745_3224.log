@@ -1,0 +1,2 @@
+budget/execution/deptfx,[错误SQL]：《SELECT sum(yearvalue) as totalp,sum(dealvalue) as totale FROM jntxfb_flow_set WHERE budgetid>0 and budgetid=3 LIMIT 1》----------原因：Unknown column 'yearvalue' in 'field list'
+URL：a=deptfx&m=execution&d=budget&ajaxbool=true&rnd=0.49882635801204833

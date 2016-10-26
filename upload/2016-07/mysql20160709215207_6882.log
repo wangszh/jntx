@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《select * from jntxfb_budget_bydep_monthtview where 1=1    and budgetid=3 and deptid=4 and subjectid=undefined   order by monnum    limit 0,20》----------原因：Unknown column 'subjectid' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.09737338282430985&_dc=1468072326480

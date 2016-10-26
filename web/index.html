@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>应用中心</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="yes">
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/js.js"></script>
+		<script type="text/javascript" src="js/base64-min.js"></script>
+		<script type="text/javascript" src="js/jsmenu.js"></script>
+		<script>
+			function initbody() {
+				if (!initlogin()) return;
+				jssdkwixin();
+				$("td[num]").click(function() {
+					opentabssss($(this).attr('num'));
+					return false;
+				});
+			}
+
+			function opentabssss(num) {
+				if (num == 'kaoqin') {
+					$.rockmenu({
+						data: [{
+							text: '定位打卡',
+							num: 'kqdaka'
+						}, {
+							text: '我的打卡记录',
+							num: 'kqdkjl'
+						}, {
+							text: '我的考勤分析',
+							num: 'kqanay'
+						}],
+						click: function(d) {
+							js.location('' + d.num + '.html');
+						}
+					}).show();
+				} else {
+					js.location('' + num + '.html');
+				}
+			}
+			
+			function opentabsss1(num){
+				js.location(''+num+'.html');
+			}
+			
+		</script>
+		<style>
+			.yangsibo {
+				border: 1px #eeeeee solid;
+				text-align: center;
+				font-size: 14px;
+				color: #555555;
+				height: 120px
+			}
+			
+			.yangsibo img {
+				height: 32px;
+				width: 32px
+			}
+			
+			.yangsibo:active {
+				background: #C1E8F2
+			}
+		</style>
+	</head>
+
+	<body class="body">
+		<div style="display: block;" id="topheader">
+			<div class="rockheader">
+				<div class="headmor"><div class="topbtn" onclick="opentabsss1('geren')"><img style="border-radius:16px;" id="myface" src="image/1440578146698_4091.jpg" height="32" width="32"></div></div>
+				<div class="headmor htitle" onclick="location.reload();" id="main_title" align="center">应用中心</div>
+				<div class="headmor" align="right"></div>
+			</div>
+			<div class="blank50"></div>
+		</div>
+		<div id="maindiv">
+			<table style="border-collapse:collapse; background:white" cellpadding="0" cellspacing="0" width="100%">
+				<tbody>
+					<tr>
+						<td class="yangsibo" num="daiban" width="33%">
+							<div><img src="image/daiban_1.png"></div>
+							<div>单据待办</div>
+						</td>
+						<td class="yangsibo" num="meet" width="34%">
+							<div><img src="image/huiyi_1.png"></div>
+							<div>日程事务</div>
+						</td>
+						<td class="yangsibo" num="kaoqin" width="33%">
+							<div><img src="image/kaoqin_1.png"></div>
+							<div>共享文件</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="yangsibo" num="todo">
+							<div><img src="image/tixing_1.png"></div>
+							<div>站内提醒</div>
+						</td>
+						<td class="yangsibo" num="gong">
+							<div><img src="image/gong_1.png"></div>
+							<div>通知公告</div>
+						</td>
+						<td class="yangsibo" num="flowlist">
+							<div><img src="image/chakan_1.png"></div>
+							<div>单据查看</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="yangsibo" num="work">
+							<div><img src="image/renwu_1.png"></div>
+							<div>工作任务</div>
+						</td>
+						<td class="yangsibo" num="address">
+							<div><img src="image/emailin_1.png"></div>
+							<div>通讯录</div>
+						</td>
+						<td class="yangsibo" num="apply">
+							<div><img src="image/xinzeng.png"></div>
+							<div>单据申请</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</body>
+
+</html>

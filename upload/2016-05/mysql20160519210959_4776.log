@@ -1,0 +1,2 @@
+/index/publictreestore,[错误SQL]：《SELECT * FROM jntxfb_subject WHERE `pid`='0'  order by `sort`》----------原因：Unknown column 'sort' in 'order clause'
+URL：a=publictreestore&m=index&d=&order=sort&expandall=true&ajaxbool=true&rnd=0.9623548467287288&_dc=1463663397146

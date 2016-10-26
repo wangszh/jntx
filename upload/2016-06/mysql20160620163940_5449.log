@@ -1,0 +1,2 @@
+flow/course/publicsave,[错误SQL]：《insert into `jntxfb_flow_course` set `name`='科目负责人审核',`num`='kmfzrsh',`checktype`='group',`atype`='all',`atypeid`=null,`atypename`='所有人员',`pid`='0',`nid`='0',`checktypeid`=null,`groupname`='科目负责人',`checktypename`='科目负责人',`explain`=null,`sort`='0',`inputid`='0',`zscheck`='0',`type`='0',`optdt`='2016-06-20 16:39:39',`setid`='25'》----------原因：Unknown column 'groupname' in 'field list'
+URL：a=publicsave&m=course&d=flow&ajaxbool=true&rnd=0.09862869200515656

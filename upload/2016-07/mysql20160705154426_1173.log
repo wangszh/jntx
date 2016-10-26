@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《SELECT count(1) FROM jntxfb_jntxfb_budgetyearmonthview WHERE 1=1》----------原因：Table 'jntxfboa.jntxfb_jntxfb_budgetyearmonthview' doesn't exist
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.3270927242881113&_dc=1467704664569

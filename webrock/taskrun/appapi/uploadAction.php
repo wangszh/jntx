@@ -1,0 +1,15 @@
+<?php
+/**
+	*****************************************************************
+	* 联系QQ：290802026/1073744729									*
+	* QQ  群：429403774，提供技术交流等								*
+	* 版  本：V2.2+													*
+	* 开发者：RockOA研发中心/雨中磐石工作室							*
+	* 邮  箱：admin@rockoa.com										*
+	* 网  址：http://www.rockoa.com/								*
+	* 说  明: 核心代码/或者在线安装代码								*
+	* 备  注: 未经允许不得商业出售，代码欢迎参考纠正				*
+	* 修改时: 2016-05-09 20:15:38									*	
+	*****************************************************************
+*/
+ set_time_limit(0);class uploadClassAction extends appapiAction{public function upfileAjax(){if(!$_FILES)exit('sorry!');$upimg= c('upfile');$maxsize= (int)$this->get('maxsize', 10);$upimg->initupfile('|jpg|png|gif|jpeg|bmp|docx|doc|zip|rar|xls|xlsx|ppt|pptx|pdf|', 'upload|'.date('Y-m').'', $maxsize);$upses= $upimg->up('file');$this->upback($upses);echo 'success';}public function upcontAjax(){$cont = $this->post('content');if($this->isempt($cont))exit('sorry');$mkdir = 'upload/'.date('Y-m').'';if(!is_dir($mkdir))mkdir($mkdir);$allfilename= ''.$mkdir.'/'.date('d_His').''.rand(1000,9999).'.png';$upses['oldfilename'] = '截图.png';$upses['fileext']   = 'png';file_put_contents($allfilename, base64_decode($cont));$filesize   = filesize($allfilename);$filesizecn   = c('upfile')->formatsize($filesize);list($picw,$pich)  = getimagesize($allfilename);if($picw==0||$pich==0){@unlink($allfilename);exit('error;');}$upses['filesize'] = $filesize;$upses['filesizecn']= $filesizecn;$upses['allfilename']= $allfilename;$upses['picw'] = $picw;$upses['pich'] = $pich;$this->upback($upses);echo 'success';}private function upback($upses){$thumbnail = '150x150';$thumbtype= (int)$this->get('thumbtype', 0);$msg = '';$data = array();if(is_array($upses)){$arrs= array('adddt'=> $this->now,'valid'=> 1,'filename'=> $upses['oldfilename'],'web'=> $this->rock->web,'ip'=> $this->rock->ip,'fileext'=> $upses['fileext'],'filesize'=> $upses['filesize'],'filesizecn'=> $upses['filesizecn'],'filepath'=> str_replace('../','',$upses['allfilename']),'optid'=> $this->adminid,'optname'=> $this->adminname);$this->db->record('[Q]file',$arrs);$id= $this->db->insert_id();$arrs['id'] = $id;$thumbpath= $arrs['filepath'];$sttua= explode('x', $thumbnail);$lw = (int)$sttua[0];$lh = (int)$sttua[1];if($upses['picw']>$lw || $upses['pich']>$lh){$imgaa= c('image', true);$imgaa->createimg($thumbpath);$thumbpath = $imgaa->thumbnail($lw, $lh, 1);}$arrs['thumbpath'] = $thumbpath;$arrs['picw'] = $upses['picw'];$arrs['pich'] = $upses['pich'];$data= $arrs;}else{$msg = $upses;}$this->rock->createtxt('upload/uptxt'.$this->adminid.'.txt',json_encode(array('msg' => $msg,'data'=> $data)));}public function getfileAjax(){$cont = '';$path = 'upload/uptxt'.$this->adminid.'.txt';if(file_exists($path)){@$cont = file_get_contents($path);}$data = array();if($cont!=''){$arr = json_decode($cont, true);$msg = $arr['msg'];$data = $arr['data'];@unlink($path);}else{$msg = 'sorry,not infor!';}$this->showreturn($data, $msg);}}

@@ -1,0 +1,2 @@
+/index/publicsave,[错误SQL]：《insert into `jntxfb_budget` set `name`='2016年度预算',`ndyear`='2016',`iscurrent`='是',`optdt`='2016-05-22 21:00:15',`type`='0',`mid`='0'》----------原因：Unknown column 'optdt' in 'field list'
+URL：a=publicsave&m=index&d=&ajaxbool=true&rnd=0.5635713536983556

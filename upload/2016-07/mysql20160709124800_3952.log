@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《SELECT count(1) FROM jntxfb_budget_bydeptview WHERE 1=1   and yearvalue<yeardealvalue》----------原因：Unknown column 'yeardealvalue' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.5047063223685502&_dc=1468039679907

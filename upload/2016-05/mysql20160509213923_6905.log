@@ -1,0 +1,2 @@
+system/subject/publictreestore,[错误SQL]：《SELECT * FROM jntxfb_subject WHERE `pid`='0'  order by `num`》----------原因：Table 'jntxfboa.jntxfb_subject' doesn't exist
+URL：a=publictreestore&m=subject&d=system&order=num&expandall=true&ajaxbool=true&rnd=0.9085994510894863&_dc=1462801162087

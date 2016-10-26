@@ -1,0 +1,534 @@
+Ext.BLANK_IMAGE_URL ='images/white.gif';
+Ext.Loader.setPath('Ext.rock', 'webrock/extjs/rock');
+Ext.Loader.setPath('Ext.ux', 'webrock/extjs/ux');
+var menuTree,menuTabs,nowtab,webimwinobj;
+function gicons(i){
+	return 'mode/icons/'+i+'.png';
+}
+function publicstore(mo,dos,oans){
+	if(!mo)mo='index';
+	if(!dos)dos='';
+	return js.getajaxurl('publicstore',mo,dos,oans);
+}
+function publiccheckstore(mo,dos,oans){
+	if(!mo)mo='index';
+	if(!dos)dos='';
+	return js.getajaxurl('publiccheckstore',mo,dos,oans);
+}
+function publicsave(mo, dos,oans){
+	if(!mo)mo='index';
+	if(!dos)dos='';
+	return js.getajaxurl('publicsave',mo,dos,oans);
+}
+function publictreestore(cans,mo,dos){
+	if(!mo)mo='index';
+	if(!dos)dos='';
+	return js.getajaxurl('publictreestore',mo,dos,cans);
+}
+function getcmp(aId){
+	return Ext.getCmp(aId);
+}
+function renderbox(v,r){
+	var da = r.column.boxdata;
+	if(!da)da=[['#888888','×'],['green','√']];
+	return '<font color='+da[v][0]+'>'+da[v][1]+'</font>';
+}
+function rendercont(v, m){
+	if(isempt(v))v='';
+	v = v.replace(/\n/gi,'<br>');
+	m.tdAttr = 'data-qtip="'+v+'"';
+	return v;
+}
+function getrand(){
+	var r = js.getrand();
+	return r;
+}
+function getparent(nu, act, pas1,pas2){
+	var o;
+	try{
+		if(pas1==undefined)pas1='';if(pas2==undefined)pas2='';
+		o = menuTabs.down('#'+nu+'');
+		if(o && act)o[act](pas1,pas2);
+	}catch(e){}
+	return o;
+}
+function gettabs(nu){
+	var num = 'tabs_'+nu+'';
+	return getcmp(num);
+}
+function winopt(cans){
+	var opt = {closeAction:'hide',width:400,maximizable:true,collapsible:true,modal:false,layout: 'fit'};
+	Ext.apply(opt,cans);
+	return opt;
+}
+function mopenview(nu,_id, gid, lx,cans){
+	if(!lx)lx='view';
+	var sa2 = nu.split('@');
+	nu = sa2[0];
+	var can = {uid:adminid,mid:_id,jmbool:true};
+	if(nu)can.modenum=nu;
+	if(sa2[1])can.table=sa2[1];
+	if(!cans)cans={};can=js.apply(can,cans);
+	var url = js.getajaxurl('$'+lx+'','flow','taskrun',can);
+	if(gid)url+='&gridid='+gid+'';
+	js.open(url, 800);
+}
+function mopenprint(nu,_id, gid,cans){
+	mopenview(nu,_id,gid,'print',cans);
+}
+function openiframe(ties, url, cans, gcns){
+	var can=js.apply({width:750,height:500, icon:gicons('page')}, cans);
+	if(!gcns)gcns={};
+	if(typeof(openiframeobj)!='object'){
+		var cansa = winopt({title: '上传',width:can.width,height:can.height,icon:can.icon,minWidth:650,minHeight:400,modal:true,border:false,items:{
+				html:'<iframe src="" name="openiframeobjname" width="100%" height="100%" frameborder="0"></iframe>'
+			}	
+		});
+		openiframeobj= Ext.create('Ext.Window',cansa);
+	}
+	openiframeobj.show();
+	openiframeobj.setWidth(can.width);
+	openiframeobj.setHeight(can.height);
+	openiframeobj.setIcon(can.icon);
+	openiframeobj.setTitle(ties);
+	if(url.indexOf('?')<0){
+		var urls = url.split(',');
+		var d={uid:adminid,num:urls[0]};
+		if(urls[1])d.mid=urls[1];
+		url= js.getajaxurl('@lu','input','flow',d);
+	}
+	//debugger;
+	for(var i in gcns)url+='&'+i+'='+gcns[i]+'';
+	openiframeobjname.location.href=url;
+}
+function opentabsiframe(txt,url,num,cans){
+	var surl='person,flow,iframe,url='+jm.encrypt(url)+'';
+	addtabs(txt, surl,num, cans);	
+}
+var bitian	= '<font color=red>*</font>';
+var indexxu	= -1;
+var rock	= [];
+function closetabs(num1){
+	var num = 'tabs_'+num1+'';
+	var bo  = true;
+	if(getcmp(num)){
+		menuTabs.setActiveTab(num);
+		menuTabs.remove(num);
+	}
+	return bo;
+}
+function closetabsnow(){
+	closetabs(nowtab.num);
+}
+function addtabs(title,urlnr,num1,opts){
+	if(isempt(urlnr)){
+		js.msg('msg','没有设置访问地址');
+		return;
+	}
+	if(!opts)opts={};
+	if(!num1)num1=js.getrand();
+	var num = 'tabs_'+num1+'',dir='',mode='',url='',act='';
+	if(!closetabs(num1))return;
+	var rand = js.getrand(),i,oi=2,urlnrs=urlnr+'',iqz='ext';
+	if(urlnr.indexOf('@')==0){iqz='tpl';urlnrs=urlnrs.substr(1);}
+	var ura	= urlnrs.split(',');
+	dir	= ura[0];mode= ura[1];
+	if(iqz=='ext')url =''+PROJECT+'/'+dir+'/'+mode+'/'+iqz+'_'+mode+'';
+	if(ura[2]){if(ura[2].indexOf('=')<0){oi=3;url+='_'+ura[2]+'';act=ura[2];}}
+	if(iqz=='ext')url+='script.js';
+	if(iqz=='tpl')url = ''+js.path+'.php?d='+dir+'&m='+mode+'&a='+act+'';
+	var urlpms={};
+	for(i=oi;i<ura.length;i++){
+		var nus	= ura[i].split('=');
+		urlpms[nus[0]]=nus[1];
+		if(iqz=='tpl')url+='&'+nus[0]+'='+nus[1]+'';
+	}
+	indexxu++;
+	var loaders = {
+		url: url,autoLoad:true,scripts:false,renderer:function(l,v){return true;},indexss:indexxu,
+		failure:function(a, v){
+			var parsent = a.getTarget();
+			parsent.getEl().unmask();
+			var s = '<div style="padding:50px;font-size:20px;line-height:50px">'+v.status+', '+v.statusText+', 加载出错。。。<br>URL：'+url+'</div>';
+			parsent.update(s);
+		},
+		success:function(a,v){
+			var s = v.responseText,can,cas,parsent,len,fun,funs,init,i,tabson;
+			var index = a.indexss;parsent = a.getTarget();parsent.removeAll();parsent.getEl().unmask();parsent.update('');
+			try{
+				if(s.indexOf('panel')<0)s=jm.uncrypt(s);
+				s	= s.replace(/\[rock\]/gi, 'rock['+index+']');
+				s	= s.replace(/BT/g, bitian);
+				fun = new Function('rand','index','params','objpanel','dir','mode',s)(rand, index, urlpms, parsent,dir,mode);
+				funs= js.apply({panel:false,init:false},fun);
+				cas = funs.panel;
+				init= funs.init;
+				tabson= funs.tabson;
+			}catch(e){
+				js.getarr(e);
+				return;
+			}
+			if(typeof(cas)=='object'){
+				len = cas.length;
+				if(isNaN(len)){
+					can = {region:'center',id:'main_'+rand+'_0'};
+					Ext.apply(can,cas);
+					if(!can.itemId)can.itemId=parsent.num;
+					parsent.add(can);
+					rock[index]=parsent.down();
+				}else{
+					for(i=0;i<len;i++){
+						if(!cas[i].id)cas[i].id='main_'+rand+'_'+i+'';
+						if(!cas[i].itemId)cas[i].itemId=parsent.num+'_'+i+'';
+					}	
+					parsent.add(cas);
+					if(len==1){
+						rock[index]=getcmp(cas[0].id);
+					}else{
+						rock[index]=[];
+						for(i=0;i<len;i++){
+							rock[index][i]=getcmp(cas[i].id);
+						}
+					}
+				}
+			}
+			if(typeof(init)=='function'){
+				init(parsent);
+			}
+			if(typeof(tabson)=='object'){
+				parsent.on(tabson);
+			}
+		}
+	};
+	var pan={
+		xtype:'panel',border:false,padding:5,title:title,closable:true,autoScroll: false,layout:'border',rand:rand,icon:'',
+		bodyStyle:'background:white;',html:'',id:num,loader:loaders,num:num1,urlstr:url,urlstring:urlnr,menuid:'',menutype:''
+	};
+	if(urlpms.padding)opts.padding=urlpms.padding;Ext.apply(pan,opts);menuTabs.add(pan).show();menuTabs.setActiveTab(num);nowtab.getEl().mask('加载中...');
+}
+
+function reloadtabs(num){
+	var tas = getcmp('tabs_'+num+'');
+	tas.getEl().mask('加载中...');
+	var o1=tas.getLoader();
+	o1.load();
+}
+
+function createindex(){
+	Ext.tip.QuickTipManager.init();
+	rockoption		= Ext.create('Ext.rock.option');
+	wherewindows 	= Ext.create('Ext.rock.where');
+	uploadwindows	= Ext.create('Ext.rock.upload');
+
+	var menubool	= true,changetabs;
+	function menuclick(view, record, item, index, e,obj){
+		var node= record.raw,icon='',surl=node.url+'';
+		if(!isempt(node.icons))icon=gicons(node.icons);
+		if(!record.isLeaf()){
+			if(record.isExpanded()){
+				record.collapse();
+			}else{
+				record.expand();
+			}
+			return;
+		}else if(node.ischeck=='1'){
+			surl='person,flow,iframe,url='+jm.encrypt(surl)+'';		
+		}else if(node.ischeck=='2'){
+			window.open(surl);
+			return;
+		}else if(node.ischeck=='3'){
+			openiframe(node.text, node.url,{icon:icon});
+			return;
+		}
+		addtabs(node.text, surl, node.num,{icon:icon,menuid:node.id,menutype:node.menutype});
+	}
+	function fullscreen(a){
+		var s = a.text,bo=false;
+		if(s=='全屏'){
+			a.setText('退出全屏');
+			a.setIcon(gicons('arrow_in'));
+			$('#main_top').hide();
+		}else{
+			a.setText('全屏');
+			a.setIcon(gicons('arrow_out'));
+			bo = true;
+			$('#main_top').show();
+		}
+		getcmp('index_top').setVisible(bo);
+		getcmp('index_menu').setVisible(bo);
+	}
+	function benreload(a){
+		reloadtabs(nowtab.num);
+	}
+	function commentopen(){
+		var l=screen.width-320;
+		var t=(screen.height-560)*0.5;
+		js.open('webreim/client/login.html?adminuser='+adminuser+'&token='+admintoken+'&murl='+jm.base64encode(URL)+'',270,520,'',{left:''+l+'px',top:''+t+'px'});
+	}
+	function loginmobiles(){
+		js.tanbody('loginmobile','登录手机版', 300,200,{
+			html:'<div id="loginmobile_div" style="height:160px;padding:5px" align="center"><div style="padding-top:20px"><img align="absmiddle" src="images/mloading.gif">加载中...</div></div>'
+		});
+		js.ajax(js.getajaxurl('getqrcode','index'),{}, function(str){
+			$('#loginmobile_div').html(str);
+		});
+	}
+	function showmenula(nobj, reb){
+		menuTree = nobj.down('treepanel');
+		if(!nobj.loadbool || reb){
+			nobj.getEl().mask('加载中...')
+			var url = js.getajaxurl('getmenu','index','',{pid:nobj.pid});
+			$.get(url, function(da){
+				menuTree.getStore().setRootNode({children:Ext.decode(da)});
+				nobj.getEl().unmask();
+			});
+		}
+		nobj.loadbool = true;
+	}
+	var menuitems = [],menuarrs=[];
+	for(var i=0;i<topmenu.length;i++){
+		var stoee = Ext.create('Ext.data.TreeStore',{
+			fields:['name'],
+			root:{children:[],expanded: true}
+		});
+		var tritem = {
+			xtype:'treepanel',rootVisible: false,autoScroll: true,store:stoee,border:false,columns:[{xtype: 'treecolumn',text:'名称',flex:1,align:'left',dataIndex:'name'}],hideHeaders:true,animate:false,listeners:{itemclick:menuclick}
+		};
+		menuarrs.push({
+			text:topmenu[i].name,icon:gicons(topmenu[i].icons)
+		});
+		menuitems.push({
+			title:topmenu[i].name,layout:'fit',itemId:'menuTree_'+topmenu[i].id+'',pid:topmenu[i].id,poixu:i,xtype:'panel',items:tritem,icon:gicons(topmenu[i].icons),listeners:{
+				expand:function(np){
+					showmenula(np);
+				}
+			}
+		});
+	}
+	function addchanmenu(mrsa){
+		var da = {name:mrsa.title,url:mrsa.urlstring,icon:mrsa.icon,num:mrsa.num,menuid:mrsa.menuid};
+		$.post(js.getajaxurl('addchangmenu','index'),da);
+	}
+	
+	Ext.create('Ext.Viewport',{
+        layout:'border',
+		padding:0,
+        items: [{
+            region: 'north',height: 60,
+            html: '<div class="topbg" style="height:60px;overflow:hidden;"></div>',
+			id:'index_top',border:false,bodyStyle:'border-bottom-width:0px'
+        },{
+			region: 'west',title: '菜单导航',id:'index_menu',
+			bodyStyle:'border-bottom-width:0px;',
+			collapsible: true,width: 200,maxWidth:500,minWidth:200,split: true,rootVisible: false,autoScroll: true,
+			layout: {
+				type: 'accordion',
+				titleCollapse: true,
+				animate: true,
+				activeOnTop: false,collapseFirst:true
+			},
+			items:menuitems,
+			tools:[{
+				type:'refresh',handler:function(){showmenula(menuTree.up('panel'), true)},tooltip:'刷新'
+			},{
+				type:'expand',tooltip:'全部展开',handler:function(){menuTree.expandAll()}
+			},{
+				type:'collapse',tooltip:'全部收起',handler:function(){menuTree.collapseAll()}
+			},{
+				type:'search',tooltip:'搜索菜单',handler:function(){}
+			}]
+		},menuTabs = Ext.create('Ext.TabPanel',{
+			xtype:'tabpanel',
+			region:'center',resizeTabs: true,enableTabScroll:true,activeTab:0,
+			bodyStyle:'border-bottom-width:0px;',
+			items:[],
+			plugins:[{
+                ptype: 'tabclosemenu',closeTabText:'关闭',closeAllTabsText:'关闭所有选择卡',closeOthersTabsText:'关闭非当前',
+				extraItemsTail:['-',{
+					text:'添加为常用菜单',icon:gicons('add'),itemId:'adcy',hideOnClick: true,handler:function(item){
+						addchanmenu(changetabs);
+					}
+				}],
+				listeners: {
+					beforemenu: function (menu, item) {
+						var o1d = menu.child('#adcy'),bo=false;
+						//o1d.setChecked(false);
+						if(item.num=='home' || item.menutype=='cy')bo=true;
+						o1d.setDisabled(bo);
+						changetabs = item;
+					}
+				}
+            }],
+			listeners:{
+				tabchange:function(old, newa){
+					nowtab = newa;
+					var title = ''+systemtitle;
+					if(nowtab.num != 'home')title = nowtab.title+'_'+systemtitle;
+					document.title = title;
+				}
+			}
+		}),{
+			id:'index_bottom',region:'south',xtype:'toolbar',
+			items:[{
+				icon:gicons('user'),text:'用户：'+adminuser+'',showSeparator:false
+			},'-','登录次数:'+adminloginci+'','->','财务预算管理系统V'+VERSION+'','-'
+			//,{
+			//	text:'登录手机版',icon:gicons('shouji'),handler:loginmobiles
+			//}
+			//,'-',{
+			//	text:'交流',icon:gicons('comment'),handler:commentopen
+			//}
+			,'-',{
+				text:'重新加载',icon:gicons('arrow_refresh'),handler:benreload
+			},'-',{
+				text:'全屏',icon:gicons('arrow_out'),handler:fullscreen
+			}]
+		}]
+	});
+	addtabs('首页','@index,home,index','home',{closable:false,icon:gicons('house'),padding:'0 0 8 0'});
+	showmenula(getcmp('index_menu').down('#menuTree_'+topmenu[0].id+''));
+	
+	function loadmenuid(id,na){
+		if(menubool)return;
+		menuTree.setTitle(na);
+		menubool = true;
+		menustore.proxy.extraParams.pid=id;
+		menustore.reload();
+	}
+	
+	var s1 = '',s2='',s3='';
+	s2 = '<table border="0" cellspacing="0" cellpadding="0"><tr>';
+	s2+='<td><div style="height:40px;overflow:hidden;margin:0px 10px"><img align="absmiddle" src="'+systemlogo+'" width="40" height="40"></div></td>';
+	s2+='<td><i><b style="font-size:25px;" >'+systemtitle+'</b></i></td>';
+	s2+='<td width="20"></td>';
+	s2+='</tr></table>';
+
+	s3 = '<table border="0" cellspacing="0" cellpadding="0"><tr>';
+	s3+='<td><div style="height:40px;overflow:hidden;margin:0px 10px"><img style="border:1px #cccccc solid;background:#ffffff;border-radius:19px;cursor:pointer;" align="absmiddle" src="'+adminface+'" id="myface" height="38" width="38"></div></td>';
+	s3+='<td>';
+	s3+='	<div align="left" style="line-height:20px" class="topzhu">您好，'+adminname+'('+adminuser+')<br>部门：'+admindeptname+'&nbsp; &nbsp; 职位：'+adminranking+'</div>';
+	s3+='</td>';
+	s3+='<td style="padding-left:20px" align="center">';
+	s3+='</td>';
+	s3+='</tr></table>';
+	
+	s1= '<table id="main_top" style="position:absolute;z-index:8;left:0px;top:0px;" class="topzhu" height="60" width="100%" border="0" cellspacing="0" cellpadding="0"><tr>';
+	s1+='<td align="left">'+s2+'</td>';
+	s1+='<td align="left">'+s3+'</td>';
+	s1+='<td align="right" id="main_top_right">'+s3+'</td>';
+	s1+= '</tr></table>';
+	$('body').append(s1);
+	
+	$('#myface').click(function(){
+		addtabs('我的头像','system,face','face',{icon:gicons('photo')});
+	});
+	
+	function createtop(){
+		var qiehuanys = function(a){
+			$.get(js.getajaxurl('changestyle','index','',{xu:a.num}), function(){
+				location.reload();
+			});
+		};
+		var toparr= [{
+			name:'提醒<font id=tixing_count color=red>(0)</font>',icons:gicons('bell'),url:'return gototixingla()'
+		},{
+			name:'样式v',icons:gicons('color_wheel'),url:'return false',menuobj:false,menu:[{
+				text:'经典样式',num:0,yss:'classic',handler:qiehuanys
+			},{
+				text:'蓝色经典样式',num:1,yss:'neptune',handler:qiehuanys
+			},{
+				text:'黑暗墨黑样式',num:2,yss:'access',handler:qiehuanys
+			},{
+				text:'经典灰色样式',num:3,yss:'gray',handler:qiehuanys
+			}]
+		},{
+			name:'刷新',icons:gicons('arrow_refresh'),url:'return location.reload();'
+		}
+		//,{
+			//name:'帮助',icons:gicons('help'),url:'http://www.rockoa.com/help.html',attr:'target="_blank"'
+		//}
+		,{
+			name:'退出',icons:gicons('report_go'),url:'?m=login&a=exit'
+		}];
+		toparr[1].menu[parseInt(stylebody[0])].icon = gicons('ok');
+		var s='<div style="height:25px;overflow:hidden;line-height:25px;padding-right:10px"><span class="topzhu" id="index_datetime">2014年12月10日[星期三] 21:58:51</span></div>';
+		s+='<div align="right"><table height="25" border="0" cellspacing="0" cellpadding="0"><tr>';
+		for(var i=0;i<toparr.length;i++){
+			var urls = 'href="javascript:"',
+				urla = toparr[i].url,
+				attr = toparr[i].attr;
+			if(urla.indexOf('return')==0){
+				urls+=' onclick="'+urla+'"';
+			}else{
+				urls = 'href="'+urla+'"';
+			}
+			if(attr)urls+=' '+attr+'';
+			s+='<td width="18" nowrap align="left"><div style="height:16px;overflow:hidden"><img src="'+toparr[i].icons+'" height="16" width="16"></div></td><td nowrap><a id="topicons_'+i+'" oi="'+i+'" class="topzhu" '+urls+'>'+toparr[i].name+'</a></td><td width="10" nowrap></td>';
+		}
+		s+='</tr></table></div>';
+		
+		$('#main_top_right').html(s);
+		
+		for(var i=0;i<toparr.length;i++){
+			if(toparr[i].menu){
+				$('#topicons_'+i+'').click(function(){
+					var o = $(this),
+						oi= parseInt(o.attr('oi'));
+					if(!toparr[oi].menuobj)toparr[oi].menuobj = Ext.create('Ext.menu.Menu',{items:toparr[oi].menu});
+					var off = o.offset();
+					toparr[oi].menuobj.showAt([off.left, off.top+20]);
+				});
+			}
+		}
+	}
+	createtop();
+	function nowdatetime(){
+		var dt=js.serverdt('Y年m月d日[星期W] H:i:s');
+		$('#index_datetime').html(dt);
+		setTimeout(function(){nowdatetime()},1000);
+	}
+	nowdatetime();
+	$(get('index_menu-body')).find('div:eq(0)').css('overflow-x','hidden');
+	
+	var loadcitis = 0,
+		loadtime  = 0;
+	function gettixing(){
+		var url = js.getajaxurl('gettixing','home','index', {loadici:loadcitis,loadtime:loadtime});
+		loadcitis++;
+		$.get(url, function(da){
+			var a = js.decode(da);
+			todocontent=a.str;
+			if(a.str)showtixing(a.str);
+			if(a.ncount>0&&getcmp('homeitemstodo'))getcmp('homeitemstodo').storereload();
+			$('#tixing_count').html('('+a.count+')');
+			loadtime = a.time;
+		});
+		setTimeout(gettixing, 60*1000*10);
+	}
+	var cans= winopt({title:'系统提醒',resizable:false,constrainHeader:true,html:'<div id="tixingwin_msgtishi">提醒</div>',autoScroll: true,opacity:0,maximizable:false,icon:gicons('bell'),collapsible:false,width:300,height:190,x:winWb()-305,y:winHb()-195,listeners:{
+		beforeclose:function(a){
+			a.animate({duration: 500,to:{opacity:0}});
+			setTimeout(function(){a.hide()},500);
+			return false;
+		}
+	}});
+	tixingwin = Ext.create('Ext.Window', cans);
+	function showtixing(str){
+		tixingwin.show();
+		str='<div style="padding:5px 10px;line-height:20px">'+str+'</div>'
+		$('#tixingwin_msgtishi').html(str);
+		tixingwin.animate({duration: 1000,to:{opacity:1},from: {opacity:0}});
+		return false;
+	}
+	setTimeout(gettixing, 5000);
+	loadyuan();
+}
+function gototixingla(){
+	addtabs('提醒信息','person,todo','todo',{icon:gicons('bell')});
+	tixingwin.hide();
+	return false;
+};
+function opennewtodo(){
+	var l = screen.width-350,t=screen.height-200;
+	js.open('?m=index&a=todo',350,180,'systodowin',{left:''+l+'px',top:''+t+'px'});
+}

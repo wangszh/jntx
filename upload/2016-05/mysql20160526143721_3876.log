@@ -1,0 +1,2 @@
+system/extent/makemonthbudget,[错误SQL]：《insert into `jntxfb_budgetmonth` (`budgetid`,`budgetyearid`,`deptid`,`subjectid`,`monnum`,`yearvalue`) select `budgetid`,`id`,`deptid`,`subjectid`,`monnum`,FORMAT(`yearvalue`/12,2) from `jntxfb_budgetmonnum`,`jntxfb_budgetyear` where `budgetid`=3》----------原因：Unknown column 'yearvalue' in 'field list'
+URL：a=makemonthbudget&m=extent&d=system&ajaxbool=true&rnd=0.3860056736844767

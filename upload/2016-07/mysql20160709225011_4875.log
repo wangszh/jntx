@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《SELECT count(1) FROM jntxfb_budget_bysubject_monthtview WHERE 1=1    and budgetid=3 and subjectid=undefined》----------原因：Table 'jntxfboa.jntxfb_budget_bysubject_monthtview' doesn't exist
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.8583717345143036&_dc=1468075810611

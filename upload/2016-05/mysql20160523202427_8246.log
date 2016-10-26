@@ -1,0 +1,2 @@
+system/extent/getbudget,[错误SQL]：《select `subjectid`,`yearvalue` from `jntxfb_budgetyear` where `budgetid`='3' and `deptid`='2'》----------原因：
+URL：a=getbudget&m=extent&d=system&ajaxbool=true&rnd=0.44573299646131115

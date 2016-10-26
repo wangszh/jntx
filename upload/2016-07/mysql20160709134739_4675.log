@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《SELECT count(1) FROM jntxfb_budgetmonthview WHERE 1=1    and budgetid=3 and deptid=4 and subjectid=undefined》----------原因：Unknown column 'undefined' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.7273600039339678&_dc=1468043257980

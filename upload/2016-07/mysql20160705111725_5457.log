@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《select * from jntxfb_budgetmonthview where 1=1    and budgetid=3 and deptid=10 and subjectid=1   order by monnum    limit 0,20》----------原因：Unknown column 'monnum' in 'order clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.7188628909949797&_dc=1467688644058

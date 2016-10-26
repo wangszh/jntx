@@ -1,0 +1,2 @@
+/index/publicstore,[错误SQL]：《select * from jntxfb_budget_bydeptview where 1=1   and dealstatus>1    order by dname    limit 0,20》----------原因：Unknown column 'dealstatus' in 'where clause'
+URL：a=publicstore&m=index&d=&ajaxbool=true&rnd=0.12709619522112447&_dc=1468039632657

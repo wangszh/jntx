@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="yes">
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/js.js"></script>
+		<script type="text/javascript" src="js/base64-min.js"></script>
+		<script>
+			var temp_token = '';
+
+			function initbody() {
+				js.splittime = 0;
+				$('#maintitle').html(systitle);
+				$('.foot').css('top', '' + (winHb() - 35) + 'px');
+				var url = jm.base64decode(js.request('url'));
+				if (url) {
+					js.setoption('syssiteurl', url);
+					apiurl = url;
+				}
+				temp_token = js.request('token');
+				var us = jm.base64decode(js.request('user'));
+				if (!us) us = js.getoption('adminuser');
+				jssdkwixin();
+				var aid = js.getoption('adminid');
+				get('adminuser').value = us;
+				get('adminpass').value = jm.base64decode(js.getoption('adminpass'));
+				setTimeout(function() {
+					js.webappruns('unregisterPush');
+				}, 1000);
+				if (temp_token.length >= 8) {
+					loginsubmit(0);
+				}
+			}
+
+			function loginsubmit(lx) {				
+				if (js.ajaxbool) return false;
+				var user = get('adminuser').value;
+				var pass = get('adminpass').value,
+					iswx = 0;
+				if (lx == 1) temp_token = '';
+				js.setmsg('');
+				if (user == '') {
+					js.msg('msg', '用户名不能为空');
+					return false;
+				}
+				if (pass == '' && temp_token == '') {
+					js.msg('msg', '密码不能为空');
+					return false;
+				}
+				js.ajaxs('login', 'checklogin', function(da) {
+					loginsuccess(da);
+				}, {
+					user: jm.base64encode(user),
+					pass: jm.base64encode(pass),
+					token: temp_token
+				});
+				return false;
+			}
+
+			function loginsuccess(a) {
+				js.setoption('adminid', a.uid);
+				js.setoption('appapikey', a.apikey);
+				js.setoption('adminname', a.name);
+				js.setoption('reimhistory', '');
+				js.setoption('logintime', js.now('time'));
+				js.setoption('adminuser', a.user);
+				js.setoption('adminface', a.face);
+				js.setoption('adminpass', jm.base64encode(a.pass));
+				js.setoption('admintoken', a.token);
+				js.setoption('splittime', a.splittime);
+				var backurl = js.request('backurl');
+				if (backurl != '') backurl = jm.base64decode(backurl);
+				if (backurl == '') backurl = 'index.html';
+				if (isapp) {
+					js.location('logintoindex');
+				} else {
+					js.location(backurl);
+				}
+			}
+
+			function loginset() {
+				js.alert('<input id="inputnum" value="' + apiurl + '" maxlength="50" class="form-control" >', {
+					title: '输入您OA系统地址',
+					btn2: '取消',
+					fun1: gotoset
+				});
+				return false;
+			}
+
+			function gotoset() {
+				var num = $('#inputnum').val();
+				if (num == '') {
+					js.msg('success', 'OA系统地址已清空');
+					js.setoption('syssiteurl', '');
+					return false;
+				}
+				if (num.substr(0, 4) != 'http') {
+					js.msg('msg', '格式不正确');
+					return;
+				}
+				var lst = num.substr(num.length - 1);
+				if (lst != '/') num += '/';
+				js.setoption('syssiteurl', num);
+				apiurl = num;
+				js.msg('success', '设置成功');
+				return true;
+			}
+		</script>
+
+	</head>
+
+	<body class="body">
+		<div class="form-group-lg">
+			<div>
+				<div style="padding:15px 0px 15px 0px;" align="center"></div>
+				<div align="center">
+					<div onclick="location.reload()" class="faceicons"><img id="myface" src="image/icon150x150.png" height="100" width="100"></div>
+				</div>
+				<div class="blank30"></div>
+				<div style="padding:0px 20px">
+					<input class="form-control form-control-lg" onkeyup="if(event.keyCode==13)get('adminpass').focus()" value="admin" id="adminuser" placeholder="请输入用户名" type="text">
+				</div>
+				<div class="blank20"></div>
+				<div style="padding:0px 20px">
+					<input class="form-control" onkeyup="if(event.keyCode==13)loginsubmit(1)" id="adminpass" placeholder="请输入密码" type="password">
+				</div>
+				<div class="blank30"></div>
+
+				<div style="padding:0px 20px">
+					<button style="width:100%" type="button" onclick="loginsubmit(1)" class="btn btn-lg btn-success" name="button"><i class="glyphicon glyphicon-hand-up"></i> 登录</button>
+				</div>
+				<div class="blank20"></div>
+				<div style="color:#888888;font-size:12px" align="center">没有帐号?请联系管理员 &nbsp;&nbsp;<a href="http://m.rockoa.com/help.html">帮助?</a></div>
+			</div>
+		</div>
+		<div class="foot" style="top: 529px;">©2016 山东金路</div>
+
+	</body>
+
+</html>

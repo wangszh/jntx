@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>个人资料</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="yes">
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/js.js"></script>
+		<script type="text/javascript" src="js/base64-min.js"></script>
+		<script>
+			var type = '0';
+
+			function initbody() {
+				if (!initlogin()) return;
+				jssdkwixin();
+				loadscriptshow();
+			}
+
+			function loadscriptshow() {
+				var s = '';
+				s += '<div align="center" style="margin-top:20px"><div class="faceicons" onclick="location.reload()"><img id="myface" src="image/icon150x150.png" height="100" width="100"></div></div>';
+				s += '<div class="wutitle" style="padding-bottom:0px">个人信息</div>';
+
+				s += '<div class="listconta">';
+				s += '<div> 姓名 <span class="righttext" id="name">' + adminname + '</span></div>';
+				s += '<div> 部门 <span class="righttext" id="deptname"></span></div>';
+				s += '<div> 职位 <span class="righttext" id="ranking"></span></div>';
+				s += '<div> 帐号 <span class="righttext" id="user"></span></div>';
+				s += '<div> 所属单位 <span class="righttext" id="company"></span></div>';
+				s += '<div> UID <span class="righttext">' + adminid + '</span></div>';
+				s += '</div>';
+
+				s += '<div class="wutitle" style="padding-bottom:0px">关于我们</div>';
+				s += '<div class="listconta">';
+				s += '<div> 系统 <span class="righttext">' + systitle + '</span></div>';
+				s += '<div> 官网 <span class="righttext">jinlu.com</span></div>';
+				s += '<div> 建议反馈 <span class="righttext">〉</span></div>';
+				s += '</div>';
+				mainobj.html(s);
+
+				var url = js.apiurl('gereninfor', 'user');
+				js.ajax(url, function(ret) {
+					$('#name').html(ret.name);
+					$('#deptname').html(ret.deptname);
+					$('#ranking').html(ret.ranking);
+					$('#user').html(ret.user);
+					$('#company').html(ret.company);
+					if (ret.face) get('myface').src = '' + apiurl + '' + ret.face + '';
+				});
+			}
+
+			function exitlogin() {
+				js.alert('确定要退出用户[' + adminname + ']吗？', {
+					btn2: '取消',
+					fun1: exitloginss
+				});
+			}
+
+			function exitloginss() {
+				js.ajax(js.apiurl('exitlogin', 'login'), function(ret) {
+					if (ret == 'success') {
+						exitlogins();
+					} else {
+						js.msg('msg', '退出失败!');
+					}
+				});
+				return true;
+			}
+
+			function exitlogins() {
+				js.setoption('adminid');
+				if (isapp) {
+					js.location('closeall');
+				} else {
+					js.location('login.html');
+				}
+			}
+		</script>
+
+	</head>
+
+	<body class="body">
+		<div id="maindiv">
+			
+		</div>
+		<div style="padding:10px"><button type="button" style="width:100%" onclick="exitlogin()" class="btn btn-lg btn-danger">退出系统</button></div>
+
+	</body>
+
+</html>
